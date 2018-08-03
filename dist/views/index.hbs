@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>{{ title }}</title>
+
+	<link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+	<link href="/assets/css/main.css" rel="stylesheet" id="bootstrap-css">
+
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+</head>
+<body>
+	<h1 class="col-sm-3 col-sm-offset-4">{{ title }}</h1>
+    <div class="col-sm-3 col-sm-offset-4 frame">
+        <ul>
+
+        </ul>
+        <div>
+            <div class="msj-rta macro">                        
+                <div class="text text-r">
+                    <input class="mytext" placeholder="Type a message"/>
+                </div> 
+
+            </div>
+            <div style="padding:10px;">
+                <span class="glyphicon glyphicon-share-alt"></span>
+            </div>
+        </div>
+    </div>
+	
+    <script>
+    	$(".mytext").on("keydown", function(e){
+		    if (e.which == 13){
+		        var text = $(this).val();
+
+		        $.post('/user-msg',{ msg:text },function(data){
+		        	$(".frame > ul").append(data.html);
+		        });
+
+		        if (text !== ""){
+		        	$.post('/bot-msg',{ msg:text },function(data){
+			        	$(".frame > ul").append(data.html);
+			        	$(".frame > ul").animate({scrollTop: $(".frame > ul").height()}, 1000);
+			        	if(typeof data.done != "undefined"){
+			        		$(".frame > ul").append('<li><img src="assets/img/what.gif" class="img-what"></li>');
+			        	}
+			        });
+
+		            $(this).val('');
+		        }
+		    }
+		});
+
+		$('body > div > div > div:nth-child(2) > span').click(function(){
+		    $(".mytext").trigger({type: 'keydown', which: 13, keyCode: 13});
+		})
+    </script>
+</body>
+</html>
